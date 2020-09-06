@@ -1,0 +1,143 @@
+": //learnvimscriptthehardway.stevelosh.com
+" All commands below are results from this link
+" Link: additional resources 
+" https://www.reddit.com/r/vim/comments/8gmmk3/how_to_continue_to_improve_at_vim/
+" A little test 
+
+" General basic settings -------------------- {{{
+set nocompatible        		" use vim instead of vi 
+syntax on               		" turn syntax highlighting on by default
+filetype on             		" detect type of file
+filetype indent on      		" load indent file for specific file type
+
+set visualbell t_vb=    		" turn off error beep/flash
+set novisualbell        		" turn off visual bell
+
+set number relativenumber               " show line numbers
+
+set timeoutlen=2000 			" Vim waits 2 seconds after pressing <Leader>
+set backspace=indent,eol,start 		" allow backspacing over autoindent, line breaks, and 
+					" start of insert.
+" }}}}
+
+" Search settings -------------------- {{{
+set hlsearch            		" highlight searches
+set incsearch           		" do incremental searching
+set showmatch           		" jump to matches when entering regexp
+set ignorecase          		" ignore case when searching
+set smartcase           		" no ignorecase if Uppercase char present
+" }}}
+
+" Windows Terminal settings --------------------  {{{
+if &term =~ '^xterm'
+	set t_u7=			" Fix for bug for entering replace mode at random
+	set noesckeys			" Another fix for the random replace mode bug
+
+	" Cursor in terminal:
+	" Link: https://vim.fandom.com/wiki/Configuring_the_cursor
+	" 1 or 0 -> blinking block
+	" 2 solid block
+	" 3 -> blinking underscore
+	" 4 solid underscore
+	" Recent versions of xterm (282 or above) also support
+	" 5 -> blinking vertical bar
+	" 6 -> solid vertical bar
+
+	" normal mode
+	let &t_EI .= "\<Esc>[0 q" 	" blinking block
+	" insert mode
+	let &t_SI .= "\<Esc>[6 q"	" solid vertical bar
+	augroup windows_term
+		autocmd!
+		autocmd VimEnter * silent !echo -ne "\e[0 q"
+		autocmd VimLeave * silent !echo -ne "\e[6 q"
+	augroup END
+endif
+" }}}
+
+" Custom Key mappings -------------------- {{{
+let mapleader = "\\"
+let maplocalleader = ","
+
+" Move line up or down
+noremap <leader>_ ddkP
+noremap <leader>- ddp
+
+" Alt escape binding (others are <c-c> or <c-[>) 
+inoremap jk <esc>
+
+" Quick access to .vimrc
+nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+nnoremap <leader>sv :source $MYVIMRC<cr>
+
+" Make upper case
+inoremap <leader><c-u> <esc>viwUea
+nnoremap <leader><c-u> viwUe
+nnoremap <leader>" viw<esc>a"<esc>bi"<esc>lel
+nnoremap <leader>' viw<esc>a'<esc>bi'<esc>lel
+vnoremap <leader>' <esc>`<i'<esc>`>a'<esc>
+vnoremap <leader>" <esc>`<i"<esc>`>a"<esc>
+
+" Change text inside (last or next)
+onoremap il( :<c-u>normal! F)vi(<cr> 
+onoremap in( :<c-u>normal! f(vi(<cr>
+onoremap il[ :<c-u>normal! F]vi[<cr>
+onoremap in[ :<c-u>normal! f[vi]<cr>
+onoremap il@ :<c-u>execute "normal! ?@\r:nohlsearch\rBvt@"<cr>
+onoremap in@ :<c-u>execute "normal! /@\r:nohlsearch\rBvt@"<cr>
+
+" Abbreviations
+iabbrev @@ luckien.hang@berkeley.edu
+iabbrev ssig -- <cr>Luc Kien Hang<cr>luckien.hang@berkeley.edu
+iabbrev ccright Copyright 2019 Luc Kien Hang, all rights reserved.
+" }}}
+
+" Exit settings -------------------- {{{
+augroup vim_exit
+	autocmd!
+	autocmd VimLeave * :!clear
+augroup END
+" }}}
+
+" Statusline settings -------------------- {{{ 
+set laststatus=2			" always show statusline
+set statusline=%f			" relative path
+set statusline+=%m\  			" modified flag [+] if modified
+set statusline+=-\ buffer:\ %n 		" buffer number
+set statusline+=%= 		  	" switch to the right side
+set statusline+=\ %y 			" file type in []
+set statusline+=\ %4l\/%4L 		" linenumber/total number of lines
+set statusline+=\ [%P] 			" in percentage
+" }}}
+
+" Filetype specific settings -------------------- {{{
+" Vimscript file settings -------------------- {{{
+augroup filetype_vim
+	autocmd!
+	autocmd FileType vim setlocal foldmethod=marker
+augroup END
+" }}}
+
+" Markdown file settings -------------------- {{{
+augroup filetype_md
+	autocmd!
+	autocmd FileType md onoremap ih :<c-u> execute "normal! ?^[-=][-=]\\+$\r:nohlsearch\rkvg_"<cr>
+	autocmd FileType md onoremap ah :<c-u> execute "normal! ?^==\\+$\r:nohlsearch\rg_vk0"<cr>
+augroup END
+" }}}
+
+" Python file settings -------------------- {{{
+augroup filetype_python
+	autocmd!
+	autocmd FileType python inoremap <buffer> <c-_> <esc>m`I# <esc>``lla
+	autocmd FileType python nnoremap <buffer> <c-_> m`I# <esc>``ll
+augroup END
+" }}}
+
+" HTML file settings -------------------- {{{
+augroup filetype_html
+	autocmd!
+	autocmd FileType html nnoremap <buffer> <localleader>f Vatzf
+augroup END
+" }}}
+" }}}	
