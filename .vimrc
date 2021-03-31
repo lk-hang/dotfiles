@@ -1,5 +1,5 @@
-	" All commands below are results from this link
-": //learnvimscriptthehardway.stevelosh.com
+" All commands below are results from this link
+" //learnvimscriptthehardway.stevelosh.com
 " Link: additional resources 
 " https://www.reddit.com/r/vim/comments/8gmmk3/how_to_continue_to_improve_at_vim/
 " A little test
@@ -12,7 +12,7 @@ filetype indent on      		" load indent file for specific file type
 filetype plugin on 				" load plugin file for specific file type
 
 set visualbell t_vb=    		" turn off error beep/flash
-set novisualbell        		" turn off visual bell
+set visualbell 
 
 set number relativenumber       " show line numbers
 
@@ -94,27 +94,27 @@ if &term =~ '^xterm'
 
 	" Cursor in terminal:
 	" Link: https://vim.fandom.com/wiki/Configuring_the_cursor
-	" 1 or 0 -> blinking block
-	" 2 solid block
+	" 0 -> blinking block not working in wsl
+	" 1 -> blinking block
+	" 2 -> solid block
 	" 3 -> blinking underscore
-	" 4 solid underscore
+	" 4 -> solid underscore
 	" Recent versions of xterm (282 or above) also support
 	" 5 -> blinking vertical bar
 	" 6 -> solid vertical bar
 
 	" normal mode
-	let &t_EI .= "\<Esc>[0 q" 	" blinking block
+	let &t_EI .= "\e[1 q" 	
 	" insert mode
-	let &t_SI .= "\<Esc>[5 q"	" solid vertical bar
+	let &t_SI .= "\e[5 q"	
 
 	augroup windows_term
 		autocmd!
-		autocmd VimEnter * silent !echo -ne "\e[0 q"
-		autocmd VimLeave * silent !echo -ne "\e[6 q"
+		autocmd VimEnter * silent !echo -ne "\e[1 q" 
+		autocmd VimLeave * silent !echo -ne "\e[5 q" 
 	augroup END
 endif
 " }}}
-
 
 
 " Custom Key mappings -------------------- {{{
@@ -188,8 +188,9 @@ augroup vim_exit
 	autocmd!
 	autocmd VimLeave * :!clear
 	" Clear screen after exiting vim 
-	" autocmd VimLeave * :set t_te=
-	autocmd VimLeave * :set t_te=^[[H^[2J
+	autocmd VimLeave * :set t_te=
+	" autocmd VimLeave * :set t_te=^[[H^[2J
+
 augroup END
 " }}}
 
@@ -240,5 +241,5 @@ augroup END
 
 echo "Successfully (re)sourced vimrc >^.^<"
 
-execute pathogen#infect()
+" execute pathogen#infect()
 

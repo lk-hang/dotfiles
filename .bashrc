@@ -128,8 +128,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Export Displays for GUI Applications
-export DISPLAY=localhost:0.0
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -146,9 +144,12 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-conda activate default
+# conda activate default
 export BROWSER='/mnt/c/Users/lkhang/AppData/Local/Vivaldi/Application/vivaldi.exe'
 
-cd ~
+# Export Displays for GUI Applications
+export DISPLAY=localhost:0.0
+export LIBGL_ALWAYS_INDIRECT=1
+export XDG_RUNTIME_DIR=/tmp/runtime-lkhang
 
-
+export PYTHONSTARTUP=~/.pythonrc
